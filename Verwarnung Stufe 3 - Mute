@@ -1,0 +1,66 @@
+const Discord = require("discord.js");
+
+const ms = require("ms");
+const moment = require("moment");
+
+module.exports.run = async(bot, message, args) => {
+    message.delete();
+
+    if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send('Du hast keine Rechte.');
+    let grund = args[2];
+    let grund2 = args[3];
+    let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    let länge = args[4];
+    if(!message.member.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send("You do not have permission to perform this command!")
+    if (!user) return message.channel.send('Du musst einen User angeben. \n\n\n\n\n\n\n **Der Grund muss 2 Wöter haben, aber auch keine 3. Zudem die Zeit im m angeben. \n !v3 `user` `Zeit`__m__ Grund Grund `Zahl für die Minuten`**')
+
+    message.guild.channels.forEach(async(channel, id) => {
+        await channel.overwritePermissions(user, {
+            SEND_MESSAGES: false,
+            ADD_REACTIONS: false
+        });
+    });
+
+    let mutetime = args[1];
+    if (!mutetime) return message.channel.send('Du musst eine Zeit angeben.\n\n\n\n\n\n\n Der **Grund** **muss 2 Wöter** haben, aber auch **keine 3**. Zudem die **Zeit im m** angeben. \n !v3 `user` `Zeit`__m__ Grund Grund `Zahl für die Minuten`**')
+
+    const embed = new Discord.RichEmbed()
+        .setTitle(`**Verwarnung Stufe 3 [Mute]**`)
+        .setDescription(`
+ Hey ${user} Du hast soeben einen **Mute** erhalten.         
+ 
+Beachte den Grund, achte auf dein Verhalten und wende dich **notfalls** an den Moderator.
+
+ __Was ist eine Verwarnung Stufe 3 | Mute? __
+ > Die Verwarnung Stufe 3 ist ein Mute, sie verhindert, dass du Nachrichten senden kannst sowie Reaktionen hinzufügen kannst.
+ > Mutes werden bei wiederholten Regelverstößen eingesetzt also lerne daraus.
+ > Die Länge des Mutes ist unter *Länge in Minuten* abzulesen.
+
+
+ __Informationen über deinen Mute__`)
+
+    .setColor("#ff3f00")
+        .setFooter(`Achte auf dein Auftreten im Chat`)
+        .setTimestamp()
+        .setThumbnail(`https://lh3.googleusercontent.com/7CdRplQBAsS1olC9Ev7mxPPqc_o0WjZTfi0khQta0Xy0V8x8HTxGorGLBOqi5FQ19Xk=w150`)
+        .addField(`Moderator:`, `${message.author}`)
+        .addField('Grund:', `${grund} ${grund2}`)
+        .addField(`Länge in Minuten:`, `${länge}`)
+
+    let channel = message.guild.channels.find(`name`, "🔓-ban-gründe");
+    channel.send(embed)
+    user.send(embed)
+    setTimeout(function() {
+        message.guild.channels.forEach(async(channel, id) => {
+            await channel.overwritePermissions(user, {
+                SEND_MESSAGES: true,
+                ADD_REACTIONS: true
+            })
+        })
+
+    }, ms(mutetime));
+}
+
+module.exports.help = {
+    name: "v3"
+}
