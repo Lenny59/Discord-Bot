@@ -1,0 +1,26 @@
+const Discord = require("discord.js");
+const errors = require("../config.json");
+const moment = require("moment")
+
+module.exports.run = async (client, message, args) => {
+  message.delete();
+  let user = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0]);
+  let reason = args.join(" ").slice(22);
+  
+  message.guild.channels.forEach(async(channel, id) => {
+    await channel.overwritePermissions(user, {
+        SEND_MESSAGES: false,
+        ADD_REACTIONS: false
+    });
+});
+  if(!message.member.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send("You do not have permission to perform this command!")
+  if (!user) return message.channel.send('Du musst einen User angeben.')
+  if(!user) return errors.cantfindUser(message, "Could not find user.");
+  if(!reason) reason = "Kein Grund wurde angegeben.";
+  
+  user.ban(reason)
+   
+}
+module.exports.help = {
+  name: "v8"
+}
