@@ -1,0 +1,43 @@
+const Discord = require("discord.js");
+const errors = require("../config.json");
+const moment = require("moment")
+
+module.exports.run = async (client, message, args) => {
+  message.delete();
+  let user = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0]);
+  let reason = args.slice(1).join(' ');
+
+  message.guild.channels.forEach(async(channel, id) => {
+    await channel.overwritePermissions(user, {
+        SEND_MESSAGES: false,
+        ADD_REACTIONS: false
+    });
+});
+  if(!message.member.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send("You do not have permission to perform this command!")
+  if (!user) return message.channel.send('Du musst einen User angeben.')
+  if(!user) return errors.cantfindUser(message, "Ich habe niemanden gefunden der so heißt.");
+  if(!reason) reason = "Kein Grund wurde angegeben.";
+  
+  const embed = new Discord.RichEmbed()
+  .setTitle(`**Verwarnung Stufe 7 [Ban]**`)
+  .setDescription(`
+  Das Team des Discords ${message.guild} hat sich entschieden dich **permanent** zu bannen.
+  Bei Fragen kannst du dich jederzeit an einen Moderator wenden oder diesen Freundschaftsanfragen schicken, um per DM zu diskutieren.`)
+  .setColor("#cf3307")
+  .setTimestamp()
+  .setThumbnail(`https://media.giphy.com/media/H99r2HtnYs492/giphy.gif`)
+  .setFooter(`Falls du zu unrecht gebannt wurdest kannst du dich an den entsprechenden Moderator wenden.`)
+  .addField("Gebannter User:", `${user}`)
+  .addField("Moderator:", `${message.author}`)
+  .addField("Grund:",`${reason}`);
+  
+  
+  user.send(embed)
+   let channel = message.guild.channels.find(`name`, "🔓-ban-gründe");
+  if(!channel) return errors.cantfindChannel(message, "Ich habe sehr sehr lange gesucht .... aber nicht den Kanal gefunden. Erstelle einen, dann klappt es das nächste Mal sicherlich^^")
+  channel.send(embed) 
+   
+}
+module.exports.help = {
+  name: "v7"
+}
