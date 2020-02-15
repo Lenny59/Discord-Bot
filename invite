@@ -1,0 +1,22 @@
+const Discord = require("discord.js");
+const config = require("../config.json");
+module.exports.run = async(bot, message, args) => {
+    
+
+    
+
+        if (message.content) {
+           
+    
+            message.channel.send(`**Werbung für diesen Discord** \nWenn du diesen Server mit deinen Freunden teilen möchtest, kannst du das gerne machen:
+            
+                     https://discord.gg/ZW8KppR`)
+        }
+}
+ 
+ 
+ 
+
+module.exports.help = {
+    name: 't'
+}
