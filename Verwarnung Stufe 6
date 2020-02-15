@@ -1,0 +1,49 @@
+const Discord = require("discord.js");
+const config = require("../config.json");
+module.exports.run = async(bot, message, args) => {
+    message.delete();
+    // let args = message.content.toLowerCase().substring(prefix.length).split(" ");
+    let user = message.mentions.members.first() || message.guild.members.get(args[0]);
+    const why = args.slice(1).join(' ');
+    if(!message.member.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send("You do not have permission to perform this command!")
+    if (!user) {
+        message.channel.send('Wen möchtest du denn verwarnen? Gebe es an.')
+    } else {
+        if (!why) {
+            message.channel.send('Du musst einen Grund angeben, ohne wäre es sinnlos.')
+        }
+
+        const embed = new Discord.RichEmbed()
+        .setColor('#cf3307')
+        .setTitle('**Stufe 6-Verwarnung**')
+        .setDescription(`
+ Du hast soeben eine Stufe 6 Verwarnung erhalten. 
+
+ Beachte *bitte* den Grund, achte *bitte* auf dein Auftreten und wende dich notfalls an einen Moderator.
+     
+ __Was ist eine Verwarnung Stufe 6?__
+> Eine Verwarnung Stufe 6 ist die höchste Verwarnung im System. Man könnte sagen, dass du eigentlich gebannt gehörst, aber man sich dagegen entschieden hat.
+> Wir möchten niemanden bannen, werden aber nicht zögern.
+
+            ___Informationen über deine Verwarnung Stufe 6___
+            
+ __Discord-Server:__
+ ${message.guild}
+
+__Moderator:__
+ ${message.author} 
+
+ __Grund:__         
+ ${why}`)
+
+ .setFooter(`Benehm dich oder du bist temproal gebannt! Immerhin hast du ja schon ein Kick hinter dir ...`)
+ .setTimestamp()
+ .setColor('RED')
+ let channel = message.guild.channels.find(`name`, "🔓-ban-gründe");
+ channel.send(embed)
+         user.send(embed)
+    }
+}
+module.exports.help = {
+    name: 'v6'
+}
