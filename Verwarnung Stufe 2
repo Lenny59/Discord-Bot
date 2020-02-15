@@ -1,0 +1,53 @@
+const Discord = require("discord.js");
+const config = require("../config.json");
+module.exports.run = async(bot, message, args) => {
+    message.delete();
+    // let args = message.content.toLowerCase().substring(prefix.length).split(" ");
+    let user = message.mentions.members.first() || message.guild.members.get(args[0]);
+    const why = args.slice(1).join(' ');
+    if(!message.member.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send("You do not have permission to perform this command!")
+    if (!user) {
+        message.channel.send('Wen möchtest du denn verwarnen? Gebe es an.')
+    } else {
+        if (!why) {
+            message.channel.send('Du musst einen Grund angeben, ohne wäre es sinnlos.')
+        }
+
+        const embed = new Discord.RichEmbed()
+        .setColor('#cf7a07')
+        .setTitle('**Verwarnung Stufe 2**')
+        .setDescription(`
+ Du hast soeben eine **Stufe 2-Verwarnung** erhalten. 
+ 
+ Beachte den Grund, achte auf dein Auftreten und wende dich notfalls an den Moderator.
+
+ __Was ist eine Verwarnung Stufe 2?__
+ > Eine Verwarnung Stufe 2 macht das was der Name sagt: Verwarnen
+ 
+ > Du brauchst keine Angst zu haben, Fehler passieren jedem mal.
+       
+ ___Informationen über deine Verwarnung Stufe 2___
+            
+ __Discord-Server:__
+ ${message.guild}
+
+__Moderator:__
+ ${message.author} 
+
+ __**Grund:**__         
+ ${why}`)
+
+.setFooter(`Jeder macht Fehler, mache bloß nicht zu viele davon.`)
+.setColor('#cf7a07')
+.setTimestamp()
+
+let channel = message.guild.channels.find(`name`, "🔓-ban-gründe");
+channel.send(embed)
+        user.send(embed)
+
+    }
+}
+
+module.exports.help = {
+    name: 'v2'
+}
