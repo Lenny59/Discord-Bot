@@ -1,0 +1,49 @@
+const Discord = require("discord.js");
+const config = require("../config.json");
+module.exports.run = async(bot, message, args) => {
+    message.delete();
+    // let args = message.content.toLowerCase().substring(prefix.length).split(" ");
+    let user = message.mentions.members.first() || message.guild.members.get(args[0]);
+    const why = args.slice(1).join(' ');
+    if(!message.member.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send("You do not have permission to perform this command!")
+    if (!user) {
+        message.channel.send('Wen möchtest du denn verwarnen? Gebe es an.')
+    } else {
+        if (!why) {
+            message.channel.send('Du musst einen Grund angeben, ohne wäre es sinnlos.')
+        }
+
+        const embed = new Discord.RichEmbed()
+        .setColor('#ff3f00')
+        .setTitle('**Verwarnung Stufe 4**')
+        .setDescription(`
+ Du hast soeben eine **Stufe 4-Verwarnung** erhalten. 
+ 
+ Beachte den Grund, achte auf dein Auftreten und wende dich notfalls an den Moderator.
+
+ __Was ist eine Verwarnung Stufe 4?__
+> Eine Verwarnung Stufe 4 ist die fast stärkste Verwarnung im System. Man sollte sie echt nur einmal bekommen, da man sonst entweder gekickt oder gebannt wird.
+       
+ ___Informationen über deine Verwarnung Stufe 2___
+            
+ __Discord-Server:__
+ ${message.guild}
+
+__Moderator:__
+ ${message.author} 
+
+ __**Grund:**__         
+ __${why}__`)
+
+
+ .setFooter(`Das hier solltest du nur einmal lesen, mit dieser Verwarnung ist nicht zu spaßen! Als nächstet könnte ein Kick folgen, aber genieße das mit Achtung!`)
+ .setTimestamp()
+ .setColor('#ff3f00')
+ let channel = message.guild.channels.find(`name`, ":unlock:-ban-gründe");
+channel.send(embed)
+user.send(embed)
+    }
+}
+module.exports.help = {
+    name: 'v4'
+}
